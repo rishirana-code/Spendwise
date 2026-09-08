@@ -1,0 +1,23 @@
+# Compiled output
+target/
+*.class
+
+# IntelliJ files
+.idea/
+*.iml
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Secrets - CRITICAL
+application.properties
+application-local.properties
+.env
+
+# Allow the safe template to be committed
+!application.properties.example
