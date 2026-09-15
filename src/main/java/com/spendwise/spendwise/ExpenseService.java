@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ExpenseService {
@@ -12,6 +14,9 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
 
+    public Page<Expense> getExpenses(String category, LocalDate from, LocalDate to, Pageable pageable) {
+        return expenseRepository.findWithFilters(getCurrentUser(), category, from, to, pageable);
+    }
     public ExpenseService(ExpenseRepository expenseRepository,
                           UserRepository userRepository) {
         this.expenseRepository = expenseRepository;

@@ -1,10 +1,12 @@
 package com.spendwise.spendwise;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.Map;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 @RestController
 @RequestMapping("/api/v1/expenses")
 public class ExpenseController {
@@ -16,6 +18,14 @@ public class ExpenseController {
         this.expenseService = expenseService;
 
     }
+    @GetMapping
+    public Page<Expense> getAllExpenses(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            Pageable pageable) {
+        return expenseService.getExpenses(category, from, to, pageable);
+    }
     //create
     @PostMapping
     public Expense addExpense(@Valid @RequestBody ExpenseRequest request){
@@ -25,14 +35,6 @@ public class ExpenseController {
         expense.setCategory(request.getCategory());
         expense.setDate(request.getDate()!=null ? request.getDate():java.time.LocalDate.now());
         return expenseService.addExpense(expense);
-    }
-
-    @GetMapping
-    public List<Expense> getAllExpenses(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate from,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate to) {
-        return expenseService.getExpenses(category, from, to);
     }
 
     //read
