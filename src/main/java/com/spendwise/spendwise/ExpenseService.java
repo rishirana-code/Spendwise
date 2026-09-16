@@ -13,14 +13,17 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
+    private final GeminiService geminiService;
 
     public Page<Expense> getExpenses(String category, LocalDate from, LocalDate to, Pageable pageable) {
         return expenseRepository.findWithFilters(getCurrentUser(), category, from, to, pageable);
     }
     public ExpenseService(ExpenseRepository expenseRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          GeminiService geminiService) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
+        this.geminiService = geminiService;
     }
 
     public List<Expense> getExpenses(String category, LocalDate from, LocalDate to) {
@@ -34,7 +37,13 @@ public class ExpenseService {
     }
 
     public Expense addExpense(Expense expense){
-        expense.setUser(getCurrentUser());       // stamp it with the owner
+        expense.setUser(getCurrentUser());
+        // If no category was provided, let the AI decide based on the note
+        if (expense.getCategory() == null || expense.getCategory().isBlank()) {
+            String aiCategory = geminiService.categorize(expense.getNote());
+            expense.setCategory(aiCategory);
+        }
+        // stamp it with the owner
         return expenseRepository.save(expense);
     }
 

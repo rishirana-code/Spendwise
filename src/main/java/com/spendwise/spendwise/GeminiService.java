@@ -51,4 +51,29 @@ public class GeminiService {
             return "Could not parse AI response.";
         }
     }
+    public String categorize(String note) {
+           String prompt = "You are an expense categorizer. Categorize the following expense "
+                   + "into EXACTLY ONE of these categories: Food, Travel, Shopping, Bills, "
+                   + "Entertainment, Health, Other. "
+                   + "Reply with ONLY the single category word and nothing else. "
+                   + "Expense: \"" + note + "\"";
+
+           String response = ask(prompt);
+
+           return cleanCategory(response);
+    }
+    private String cleanCategory(String raw){
+        if (raw == null) return "Other";
+        String cleaned = raw.trim().replaceAll("[^a-zA-Z]", ""); // strip punctuation/whitespace
+
+        List<String> allowed = List.of(
+                "Food", "Travel", "Shopping", "Bills", "Entertainment", "Health", "Other");
+
+        for (String category : allowed) {
+            if (category.equalsIgnoreCase(cleaned)) {
+                return category;   // return in proper casing
+            }
+        }
+        return "Other";
+    }
 }

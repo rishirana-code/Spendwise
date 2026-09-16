@@ -12,7 +12,7 @@ public class ExpenseRequest {
       @NotBlank(message = "Note is req...")
       private String note;
 
-      @NotBlank(message = "Category is req..")
+
        private String category;
 
       private java.time.LocalDate date;
