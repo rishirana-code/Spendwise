@@ -76,4 +76,21 @@ public class GeminiService {
         }
         return "Other";
     }
+    public String generateInsights(String month,Double total,Map<String,Double>breakdown){
+        StringBuilder breakdownText = new StringBuilder();
+        for (Map.Entry<String, Double> entry : breakdown.entrySet()) {
+            breakdownText.append("- ").append(entry.getKey())
+                    .append(": ").append(entry.getValue()).append("\n");
+        }
+        String prompt = "You are a friendly personal finance advisor. "
+                + "Analyze this user's spending for " + month + ".\n\n"
+                + "Total spent: " + total + "\n"
+                + "Breakdown by category:\n" + breakdownText + "\n"
+                + "Give a short, friendly analysis in 3-4 sentences. "
+                + "Point out the biggest spending area, whether the balance looks healthy, "
+                + "and 1-2 specific, actionable suggestions to save money. "
+                + "Be encouraging, not judgmental. Do not use markdown formatting.";
+
+        return ask(prompt);
+    }
 }

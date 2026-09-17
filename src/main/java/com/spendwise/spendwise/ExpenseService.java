@@ -76,6 +76,7 @@ public class ExpenseService {
             expenseRepository.deleteById(id);
         }
     }
+
     public Double getMonthlyTotal(int year, int month) {
         LocalDate from = LocalDate.of(year, month, 1);
         LocalDate to = from.withDayOfMonth(from.lengthOfMonth());
@@ -95,5 +96,17 @@ public class ExpenseService {
             breakdown.put(category, total);
         }
         return breakdown;
+    }
+
+    public String getMonthlyInsights(int year,int month){
+        Double total = getMonthlyTotal(year,month);
+        Map<String,Double> breakdown = getMonthlyCategoryBreakdown(year,month);
+
+        if(total == null || total == 0){
+            return "no Expenses has been added yet,Try adding some Expenses";
+        }
+
+        String  monthLabel = year + "-" + String.format("%02d",month);
+        return geminiService.generateInsights(monthLabel,total,breakdown);
     }
 }

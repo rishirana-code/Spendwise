@@ -5,14 +5,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/ai")
 public class AiController {
 
-    private final GeminiService geminiService;
+    private final ExpenseService expenseService;
 
-    public AiController(GeminiService geminiService){
-        this.geminiService=geminiService;
+    public AiController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
     }
 
-    @GetMapping("/test")
-    public String test(@RequestParam String prompt){
-        return geminiService.ask(prompt);
+    @GetMapping("/insights")
+    public String getInsights(@RequestParam int year, @RequestParam int month) {
+        return expenseService.getMonthlyInsights(year, month);
     }
+
+
 }
